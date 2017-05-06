@@ -5,6 +5,6 @@ You can see all of the moments that can add or delete the tweet from the moment.
   
   
 NOTICE: It works ONLY tweet URL first loaded.  
-That means, It works only the following URL first loaded: "https://twitter.com/(@ ID)/status/(tweet ID)"  
+  That means, It works only the following URL first loaded: "https://twitter.com/(@ ID)/status/(tweet ID)"  
 I'll update it soon, then it will work in other situation.  
   
