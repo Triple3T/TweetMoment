@@ -28,12 +28,7 @@ function moment_tool(momentarray) {
 	moment_lists = momentarray;
 	const dropdown_openlist = document.querySelectorAll("div.dropdown-menu.is-autoCentered")[1]; //드롭다운 메뉴 찾기
 	const moment_menu = document.querySelectorAll(".MomentCurationMenuItem"); //모멘트에 추가/삭제하는 버튼 찾기
-	//.MomentCurationMenuItem만 있으면 이 모멘트의 멤버가 아님을 의미한다
-	//따라서 모멘트에 추가가 가능하다
-	//.is-member와 같이 있으면 이 모멘트의 멤버임을 의미한다
-	//따라서 모멘트에서 삭제할 수 있다
-
-	//이 주석은 배포할 때 지우고 배포할 것.
+	
 	var firstmoment = dropdown_openlist.querySelector("ul").querySelectorAll("li.MomentCurationMenuItem")[0];
 	var secondmoment = dropdown_openlist.querySelector("ul").querySelectorAll("li.MomentCurationMenuItem").length<1?undefined:dropdown_openlist.querySelector("ul").querySelectorAll("li.MomentCurationMenuItem")[1];
 	var i=0
