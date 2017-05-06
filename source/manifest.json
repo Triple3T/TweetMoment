@@ -1,0 +1,21 @@
+{
+"manifest_version": 2,
+"author": "Triple",
+"name": "TweetMoment", 
+"description": "Erase tweet in the moment that you are not able to see in it.",
+"version": "0.1.1a",
+"icons": {
+"20": "icon.png"
+},
+"permissions": [
+"storage",
+"activeTab",
+"tabs",
+"<all_urls>"
+],
+"content_scripts": [{
+"matches": ["https://twitter.com/*"],
+"js": ["content.js"],
+"run_at": "document_end"
+}]
+}
