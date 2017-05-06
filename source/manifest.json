@@ -3,9 +3,9 @@
 "author": "Triple",
 "name": "TweetMoment", 
 "description": "Edit tweet in the moment that you are not able to see in it.",
-"version": "0.1.1a",
+"version": "0.1.1",
 "icons": {
-"20": "icon.png"
+"128": "icon.png"
 },
 "permissions": [
 "storage",
