@@ -3,15 +3,13 @@
 "author": "Triple",
 "name": "TweetMoment", 
 "description": "Edit tweet in the moment that you are not able to see in it.",
-"version": "0.1.1",
+"version": "1.0.0",
 "icons": {
 "128": "icon.png"
 },
 "permissions": [
-"storage",
 "activeTab",
-"tabs",
-"<all_urls>"
+"https://twitter.com/*"
 ],
 "content_scripts": [{
 "matches": ["https://twitter.com/*"],
