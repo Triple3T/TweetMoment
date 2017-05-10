@@ -1,6 +1,13 @@
+/*var target=undefined;
+document.addEventListener('click', function(e) {
+    e = e || window.event;
+	target = e.target || e.srcElement;
+	console.log(target);
+}, false);
+*/
 var youcango = true;
-function get_json(numz) {
-	youcango = false;
+function get_json() {
+	console.log("get_json func running...")
 	var request = new XMLHttpRequest();
 	var moment_id_list = [];
 	var moment_title_list = [];
@@ -23,15 +30,30 @@ function get_json(numz) {
 }
 
 function moment_tool(momentarray) {
+	console.log("moment_tool func running...");
 	moment_lists = momentarray;
 	var i=0;
-	const dropdown_openlist = document.querySelectorAll("div.dropdown-menu.is-autoCentered")[1]; //드롭다운 메뉴 찾기
-	const moment_menu = document.querySelectorAll(".MomentCurationMenuItem"); //모멘트에 추가/삭제하는 버튼 찾기
+	var dropdown_openlist;
+	var dropdown_all_lists = document.querySelectorAll("div.dropdown-menu.is-autoCentered");
+	var realindex = -1;
+	for (i=0;i<dropdown_all_lists.length;i++) {
+		if (dropdown_all_lists[i].querySelector("ul").getAttribute("aria-hidden") == "false") {
+			realindex = i;
+			break;
+		}
+	}
+	if (realindex<0) {
+		console.log("no desired ul.");
+		youcango = true;
+		return 0;
+	}
+	dropdown_openlist = dropdown_all_lists[realindex].querySelector("ul");
+	//리스팅 텍스트
 	var listing_moment_menus = '';
 	for (i=0;i<moment_lists[0].length;i++) {
 		//push moment menus
-		var plus_A = '<li class="MomentCurationMenuItem " created="true" data-moment-id="'+moment_lists[0][i]+'">';
-		var minus_A = '<li class="MomentCurationMenuItem is-member " data-moment-id="'+moment_lists[0][i]+'">';
+		var plus_A = '<li class="MomentCurationMenuItem ___created" created="true" data-moment-id="'+moment_lists[0][i]+'">';
+		var minus_A = '<li class="MomentCurationMenuItem is-member ___created" created="true" data-moment-id="'+moment_lists[0][i]+'">';
 		var default_B = '<button type="button" class="dropdown-link" title="'+moment_lists[1][i]+'">';
 		var default_subA = '<span class="MomentCurationMenuItem-addText">'+moment_lists[1][i]+'에 추가하기</span>';
 		var default_subB = '<span class="MomentCurationMenuItem-removeText">'+moment_lists[1][i]+'에서 삭제하기</span>';
@@ -40,24 +62,34 @@ function moment_tool(momentarray) {
 		listing_moment_menus += plus_A + default_B + default_subA + default_subB + default_B_close + default_A_close;
 		listing_moment_menus += minus_A + default_B + default_subA + default_subB + default_B_close + default_A_close;
 	}
+	//listing moment menus - READY!!
 	
-	var momentmenu_list_df = dropdown_openlist.querySelector("ul").querySelectorAll("li.MomentCurationMenuItem");
+	//드롭다운 메뉴의 모멘트 메뉴를 전부 선택
+	var momentmenu_list_df = dropdown_openlist.querySelectorAll("li.MomentCurationMenuItem");//모멘트에 추가/삭제하는 버튼 찾기
+	//하나도 없으면 트리거를 돌리고 이스케이프
 	if (momentmenu_list_df.length<1) {
+		console.log("no moment menu.");
 		youcango = true;
 		return 0;
 	}
+	//있으면?
 	var momentmenu_d=[];
 	for (i=0;i<parseInt(momentmenu_list_df.length);i++) {
+		//created 어트리뷰트가 언디파인드(기본 생성된 메뉴)일 경우에만 인덱스를 저장
 		if (momentmenu_list_df[i].attributes.created === undefined) {
-				momentmenu_d[momentmenu_d.length] = i;
+			momentmenu_d[momentmenu_d.length] = i;
 		}
 	}
+	//만약 기본 생성 메뉴가 없다면 이스케이프
 	if (momentmenu_d.length < 1) {
+		console.log("no new moment menu detected.");
 		youcango=true;
 		return 0;
 	}
+	//혹시 몰라서
 	var firstmoment = momentmenu_list_df[momentmenu_d[0]];
 	if (firstmoment === undefined) {
+		console.log("no moment menu.");
 		youcango =true;
 		return 0;
 	}
@@ -73,28 +105,26 @@ function moment_tool(momentarray) {
 			secondmoment = undefined;
 		});
 	}
+	console.log("moment menu successfully expaned.");
 	youcango = true;
 }
 
-targetObject = document.querySelectorAll("div.dropdown-menu.is-autoCentered")[1];
 var observerObject = new MutationObserver(mutationObjectCallback);
-observerObject.observe(targetObject, {
+observerObject.observe(document, {
 	attributes: true,
 	attributeFilter: ["id", "class"],
 	childList: true,
 	subtree: true
 });
 function mutationObjectCallback(mutationRecordsList) {
-	console.log("mutationObjectCallback invoked.");
-	
+	//console.log("mutationObjectCallback invoked.");
 	mutationRecordsList.forEach(function(mutationRecord) {
-		if (mutationRecord.type == 'childList') {
-			console.log(mutationRecord.type);
-			if (document.querySelectorAll(".MomentCurationMenuItem").length > 0 &&
-			document.querySelectorAll(".MomentCurationMenuItem").length < 3 && youcango) {
-				get_json(document.querySelectorAll(".MomentCurationMenuItem").length);
-				//
-			}
+		if (mutationRecord.type == 'childList'
+		&& mutationRecord.addedNodes.length >= 2
+		&& youcango
+		&& mutationRecord.addedNodes[1].tagName == 'LI') {
+			youcango = false;
+			get_json();
 		}
 	});
 }
