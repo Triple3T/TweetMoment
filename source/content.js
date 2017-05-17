@@ -6,7 +6,7 @@ document.addEventListener('click', function(e) {
 }, false);
 */
 var youcango = true;
-function get_json() {
+function get_json(htmlresource) {
 	console.log("get_json func running...")
 	var request = new XMLHttpRequest();
 	var moment_id_list = [];
@@ -24,14 +24,29 @@ function get_json() {
 				moment_id_list.push(moment_list_p[i]);
 				moment_title_list.push(moment_list_p[i+4].replace(/&quot;/gi,'"'));
 			}
-			moment_tool([moment_id_list, moment_title_list]);
+			var arr = [moment_id_list, moment_title_list];
+			//console.log(moment_id_list);
+			var listing='';
+			for (i=0;i<arr[0].length;i++) {
+				//push moment menus
+				var plus_A = '<li class="MomentCurationMenuItem ___created" created="true" data-moment-id="'+arr[0][i]+'">';
+				var minus_A = '<li class="MomentCurationMenuItem is-member ___created" created="true" data-moment-id="'+arr[0][i]+'">';
+				var default_B = '<button type="button" class="dropdown-link" title="'+arr[1][i]+'">';
+				var default_subA = '<span class="MomentCurationMenuItem-addText">'+arr[1][i]+'에 추가하기</span>';
+				var default_subB = '<span class="MomentCurationMenuItem-removeText">'+arr[1][i]+'에서 삭제하기</span>';
+				var default_B_close = '</button>';
+				var default_A_close = '</li>';
+				listing += plus_A + default_B + default_subA + default_subB + default_B_close + default_A_close;
+				listing += minus_A + default_B + default_subA + default_subB + default_B_close + default_A_close;
+			}
+			//listing moment menus - READY!!
+			htmlresource.outerHTML = listing;
 		}
 	}
 }
 
-function moment_tool(momentarray) {
+function moment_tool() {
 	console.log("moment_tool func running...");
-	moment_lists = momentarray;
 	var i=0;
 	var dropdown_openlist;
 	var dropdown_all_lists = document.querySelectorAll("div.dropdown-menu.is-autoCentered");
@@ -49,20 +64,7 @@ function moment_tool(momentarray) {
 	}
 	dropdown_openlist = dropdown_all_lists[realindex].querySelector("ul");
 	//리스팅 텍스트
-	var listing_moment_menus = '';
-	for (i=0;i<moment_lists[0].length;i++) {
-		//push moment menus
-		var plus_A = '<li class="MomentCurationMenuItem ___created" created="true" data-moment-id="'+moment_lists[0][i]+'">';
-		var minus_A = '<li class="MomentCurationMenuItem is-member ___created" created="true" data-moment-id="'+moment_lists[0][i]+'">';
-		var default_B = '<button type="button" class="dropdown-link" title="'+moment_lists[1][i]+'">';
-		var default_subA = '<span class="MomentCurationMenuItem-addText">'+moment_lists[1][i]+'에 추가하기</span>';
-		var default_subB = '<span class="MomentCurationMenuItem-removeText">'+moment_lists[1][i]+'에서 삭제하기</span>';
-		var default_B_close = '</button>';
-		var default_A_close = '</li>';
-		listing_moment_menus += plus_A + default_B + default_subA + default_subB + default_B_close + default_A_close;
-		listing_moment_menus += minus_A + default_B + default_subA + default_subB + default_B_close + default_A_close;
-	}
-	//listing moment menus - READY!!
+	
 	
 	//드롭다운 메뉴의 모멘트 메뉴를 전부 선택
 	var momentmenu_list_df = dropdown_openlist.querySelectorAll("li.MomentCurationMenuItem");//모멘트에 추가/삭제하는 버튼 찾기
@@ -98,7 +100,7 @@ function moment_tool(momentarray) {
 	if (secondmoment !== undefined) {
 		momentmenu_list_df.forEach(function deletedown(value,index) {
 			if (index===momentmenu_d[0]) {
-				value.outerHTML = listing_moment_menus;
+				get_json(value);
 			} else {
 				value.outerHTML = '';
 			}
@@ -124,7 +126,7 @@ function mutationObjectCallback(mutationRecordsList) {
 		&& youcango
 		&& mutationRecord.addedNodes[1].tagName == 'LI') {
 			youcango = false;
-			get_json();
+			moment_tool();
 		}
 	});
 }
